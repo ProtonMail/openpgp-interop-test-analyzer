@@ -1,0 +1,79 @@
+name: 'Compare with baseline'
+description: 'Analyze the results of the interoperability test suite'
+
+inputs:
+
+  baseline:
+    description: 'The id of the baseline implementation'
+    required: true
+
+  target:
+    description: 'The id of the target implementation'
+    required: true
+
+  results: 
+    description: 'Path to the test results'
+    required: true
+    default: 'test-suite-results.json'
+
+  output:
+    description: 'Path to the output'
+    required: true
+    default: 'baseline_comparison.json'
+  
+  summarize:
+    description: 'Whether to produce a small summary for the job'
+    required: true
+    default: 'true'
+
+  fail-on-regression:
+    description: 'Whether to fail if a regression was found'
+    required: true
+    default: 'true'
+  
+  upload:
+    description: 'Whether to upload the comparison results as an artifact'
+    required: true
+    default: 'true'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+      with:
+        repository: marinthiercelin/sop-test-analyzer
+        path: analyzer
+    - name: Set up python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Show files
+      run: ls -la .
+      shell: bash
+    - name: Compare with baseline
+      run: cat $RESULTS | python analyzer/clean_up_results.py | python analyzer/compare_with_baseline.py $BASELINE $TARGET > $OUTPUT
+      shell: bash
+      env:
+        RESULTS: ${{ inputs.results }}
+        BASELINE: ${{ inputs.baseline }}
+        TARGET: ${{ inputs.target }}
+        OUTPUT: ${{ inputs.output }}
+    - if: ${{ inputs.upload == 'true' }}
+      name: Upload comparison with main
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.output }}
+        path: ${{ inputs.output }}
+    - if: ${{ inputs.summarize == 'true' }}
+      name: Summarize test results
+      run: cat $OUTPUT | python analyzer/summarize.py >> $GITHUB_STEP_SUMMARY
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}
+    - if: ${{ inputs.fail-on-regression == 'true' }}
+      name: "Fail action on regression"
+      run: cat $OUTPUT | python analyzer/pass_or_fail.py
+      shell: bash
+      env:
+        OUTPUT: ${{ inputs.output }}

@@ -7,6 +7,7 @@ def main():
     (baseline, target) = get_args()
     all_changes = compare_with_baseline(data, baseline, target)
     json.dump(all_changes, sys.stdout, indent=2)
+        
 
 def compare_with_baseline(data, baseline, target):
     all_changes = []
