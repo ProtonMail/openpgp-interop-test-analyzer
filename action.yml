@@ -42,7 +42,8 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v3
       with:
-        repository: marinthiercelin/sop-test-analyzer
+        repository: ProtonMail/openpgp-interop-test-analyzer
+        ref: 'main'
         path: analyzer
     - name: Set up python
       uses: actions/setup-python@v4
