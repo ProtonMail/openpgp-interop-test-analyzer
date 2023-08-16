@@ -77,7 +77,7 @@ def check_target_producer_run(section, test, test_runs, baseline, target):
         find_baseline_result = lambda x: x["producer"] == result_producer
         baseline_result = find(baseline_run["results"], find_baseline_result)
         if baseline_result is None:
-            print_err("Could not find baseline result: %s - %s - %s" % (section["section"], test["title"], result_producer), file=sys.stderr)
+            print_err("Could not find baseline result: %s - %s - %s" % (section["section"], test["title"], result_producer))
             continue
         result_change = compare_results(baseline_result, target_result)
         if result_change != ResultChange.UNCHANGED:
