@@ -53,7 +53,7 @@ runs:
       run: ls -la .
       shell: bash
     - name: Compare with baseline
-      run: cat $RESULTS | python analyzer/clean_up_results.py | python analyzer/compare_with_baseline.py $BASELINE $TARGET > $OUTPUT
+      run: cat $RESULTS | python analyzer/compare_with_baseline.py $BASELINE $TARGET > $OUTPUT
       shell: bash
       env:
         RESULTS: ${{ inputs.results }}
