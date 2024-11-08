@@ -108,6 +108,7 @@ class ResultChange(Enum):
 NEUTRAL = "Neutral"
 SUCCESS = "Success"
 FAILURE = "Failure"
+UNKNOWN = "Unknown"
     
 
 def compare_results(baseline_result, target_result):
@@ -115,6 +116,8 @@ def compare_results(baseline_result, target_result):
     baseline_score = baseline_result["score"]
     if baseline_score == target_score:
         return ResultChange.UNCHANGED
+    elif target_score == UNKNOWN:
+        return ResultChange.REGRESSION
     elif target_score == FAILURE or (target_score == NEUTRAL and baseline_score == SUCCESS):
         return ResultChange.REGRESSION
     elif target_score == SUCCESS or (target_score == NEUTRAL and baseline_score == FAILURE):
