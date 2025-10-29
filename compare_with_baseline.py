@@ -26,8 +26,8 @@ def compare_with_baseline(data, baseline, target):
     return all_changes
 
 def check_target_consumer_run(section, test, test_runs, baseline, target):
-    find_target = lambda test_result : test_result["producer"] == target
-    find_baseline = lambda test_result : test_result["producer"] == baseline
+    find_target = lambda test_result : test_result and test_result["producer"] == target
+    find_baseline = lambda test_result : test_result and test_result["producer"] == baseline
     result_changes = []
     for test_run in test_runs:
         artifact_producer = test_run["artifact"]["producer"]
@@ -53,8 +53,8 @@ def check_target_consumer_run(section, test, test_runs, baseline, target):
     return result_changes
 
 def check_target_producer_run(section, test, test_runs, baseline, target):
-    find_target = lambda test_run : test_run["artifact"]["producer"] == target
-    find_baseline = lambda test_run : test_run["artifact"]["producer"] == baseline
+    find_target = lambda test_run : test_run and test_run["artifact"]["producer"] == target
+    find_baseline = lambda test_run : test_run and test_run["artifact"]["producer"] == baseline
     target_run = find(test_runs, find_target)
     if target_run is None:
         return []
