@@ -34,12 +34,14 @@ def check_target_consumer_run(section, test, test_runs, baseline, target):
         if test_run["artifact"]["score"] != SUCCESS and test_run["artifact"]["score"] != NEUTRAL:
             continue
         target_result = find(test_run["results"], find_target)
+        baseline_result = find(test_run["results"], find_baseline)
+        if target_result is None and baseline_result is None:
+            continue
         if target_result is None:
             print_err("Could not find target result: %s - %s - %s" % (section["section"], test["title"], artifact_producer))
             continue
-        baseline_result = find(test_run["results"], find_baseline)
         if baseline_result is None:
-            print_err("Could not find target result: %s - %s - %s" % (section["section"], test["title"], artifact_producer))
+            print_err("Could not find baseline result: %s - %s - %s" % (section["section"], test["title"], artifact_producer))
             continue
         result_change = compare_results(baseline_result, target_result)
         if result_change != ResultChange.UNCHANGED:
